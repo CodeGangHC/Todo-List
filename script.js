@@ -24,6 +24,7 @@ const createTodo = function (storageData) {
   });
 
   if (storageData?.complete) {
+    // ? = optional chaining; either undefined or null, evaluates to undefined to handle an error
     newLi.classList.add("complete");
   }
 
@@ -58,7 +59,10 @@ const saveItemsFn = function () {
     };
     saveItems.push(todoObj);
   }
-  localStorage.setItem("saved-items", JSON.stringify(saveItems));
+
+  saveItems.length === 0
+    ? localStorage.removeItem("saved-items")
+    : localStorage.setItem("saved-items", JSON.stringify(saveItems));
 };
 
 if (savedTodoList) {
@@ -66,3 +70,26 @@ if (savedTodoList) {
     createTodo(savedTodoList[i]);
   }
 }
+
+const weatherSearch = function (position) {
+  console.log(position);
+  const openWeatherRes = fetch(
+    `https://api.openweathermap.org/data/2.5/onecall?lat=${position.latitude}&lon=${position.longitude}&appid=407105789da9661100357f4807f412e9`
+  );
+};
+
+const accessToGeo = function (position) {
+  const positionObj = {
+    latitude: position.coords.latitude,
+    longitude: position.coords.longitude,
+  };
+
+  weatherSearch(positionObj);
+};
+
+const askForLocation = function () {
+  navigator.geolocation.getCurrentPosition(accessToGeo, (err) => {
+    console.log(err);
+  });
+};
+askForLocation();
